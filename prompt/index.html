@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vibe Prompt Builder – AI 프롬프트 자동 조립기</title>
+  <meta name="description" content="핵심 키워드만 입력하면 전문가용 AI 프롬프트로 자동 조립해 드립니다. 코딩 지식 없이도 AI와 완벽하게 소통하세요." />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind 커스텀 테마 설정 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Pretendard', 'system-ui', 'sans-serif'],
+            mono: ['Fira Code', 'monospace'],
+          },
+          animation: {
+            'fade-in':    'fadeIn 0.45s ease forwards',
+            'slide-up':   'slideUp 0.55s cubic-bezier(0.16,1,0.3,1) forwards',
+            'pulse-once': 'pulseOnce 0.55s ease',
+            'shake':      'shake 0.4s ease',
+          },
+          keyframes: {
+            fadeIn:    { from:{ opacity:'0' }, to:{ opacity:'1' } },
+            slideUp:   { from:{ opacity:'0', transform:'translateY(20px)' }, to:{ opacity:'1', transform:'translateY(0)' } },
+            pulseOnce: { '0%,100%':{ transform:'scale(1)' }, '50%':{ transform:'scale(1.04)' } },
+            shake:     { '0%,100%':{ transform:'translateX(0)' }, '20%':{ transform:'translateX(-7px)' }, '40%':{ transform:'translateX(7px)' }, '60%':{ transform:'translateX(-4px)' }, '80%':{ transform:'translateX(4px)' } },
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- 커스텀 CSS (분리된 스타일시트) -->
+  <link rel="stylesheet" href="./css/style.css" />
+</head>
+<body class="min-h-screen bg-slate-50">
+
+<!-- ════════════════════════════════════════
+     HERO HEADER
+════════════════════════════════════════ -->
+<header class="hero-bg text-white relative overflow-hidden">
+  <!-- decorative circles -->
+  <div class="absolute -top-20 -right-20 w-80 h-80 rounded-full bg-blue-600 opacity-20 blur-3xl pointer-events-none"></div>
+  <div class="absolute -bottom-10 -left-10 w-60 h-60 rounded-full bg-indigo-500 opacity-25 blur-2xl pointer-events-none"></div>
+
+  <div class="relative max-w-6xl mx-auto px-5 py-10 md:py-14">
+    <!-- badge -->
+    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest bg-white/15 border border-white/25 text-blue-100 mb-5">
+      <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+      Vibe Prompt Builder
+    </span>
+
+    <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight mb-3">
+      AI 프롬프트 자동 조립기
+      <span class="block text-blue-300 text-xl md:text-2xl font-semibold mt-2">
+        키워드만 넣으면 전문가급 프롬프트가 완성됩니다
+      </span>
+    </h1>
+    <p class="text-blue-100 text-sm md:text-base max-w-xl leading-relaxed">
+      AI에게 어떻게 물어야 좋은 코드가 나오는지 모르겠다면?<br />
+      <strong class="text-white">핵심 정보만 입력</strong>하면 전문가처럼 조립된 프롬프트를 드립니다.
+    </p>
+
+    <!-- stats -->
+    <div class="flex flex-wrap gap-5 mt-8 text-xs text-blue-200">
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        템플릿 기반 자동 조립
+      </div>
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        원클릭 클립보드 복사
+      </div>
+      <div class="flex items-center gap-2">
+        <svg class="w-4 h-4 text-blue-400" fill="currentColor" viewBox="0 0 20 20"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        ChatGPT · Claude · Gemini 지원
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════
+     MAIN — 2-COLUMN GRID
+════════════════════════════════════════ -->
+<main class="max-w-6xl mx-auto px-4 py-8 md:py-12">
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 items-start">
+
+    <!-- ══════════════════════════
+         LEFT: INPUT PANEL
+    ══════════════════════════ -->
+    <section class="glass rounded-2xl shadow-xl overflow-hidden animate-slide-up">
+
+      <!-- mac-style top bar -->
+      <div class="panel-bar">
+        <div class="flex gap-1.5">
+          <span class="dot bg-red-400"></span>
+          <span class="dot bg-yellow-400"></span>
+          <span class="dot bg-green-400"></span>
+        </div>
+        <span class="text-slate-300 text-sm font-medium ml-1">📝 프로젝트 정보 입력</span>
+      </div>
+
+      <!-- ✦ API KEY SECTION ✦ -->
+      <div class="apikey-section mx-6 mt-5">
+        <div class="flex items-center justify-between mb-2">
+          <label for="apiKey" class="flex items-center gap-1.5 text-xs font-bold text-indigo-700 uppercase tracking-wider">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 8a6 6 0 01-7.743 5.743L10 14l-1 1-1 1H6v2H2v-4l4.257-4.257A6 6 0 1118 8zm-6-4a1 1 0 100 2 2 2 0 012 2 1 1 0 102 0 4 4 0 00-4-4z" clip-rule="evenodd"/></svg>
+            🔑 AI API KEY (OpenAI 또는 Gemini)
+          </label>
+          <span id="keySavedBadge" class="key-saved">✓ 저장됨</span>
+        </div>
+        <input
+          id="apiKey"
+          type="password"
+          class="field"
+          placeholder="OpenAI: sk-proj-…  |  Gemini: AIza… 또는 AQ.…"
+          autocomplete="off"
+        />
+        <p class="mt-1.5 text-xs text-indigo-500/80">🔒 API 키는 이 브라우저에만 저장되며 외부로 전송되지 않습니다.</p>
+      </div>
+
+      <div class="p-6 pt-4 space-y-5">
+
+        <!-- ① 프로젝트 주제 -->
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="step-badge">1</span>
+            <label for="projectTitle" class="lbl mb-0">프로젝트 주제 <span class="text-red-400">*</span></label>
+          </div>
+          <!-- input + dice button row -->
+          <div class="flex items-center gap-2">
+            <input
+              id="projectTitle"
+              type="text"
+              class="field"
+              placeholder="예: 맛집 추천 앱, 가계부 웹사이트, 온라인 쇼핑몰…"
+            />
+            <button
+              id="diceBtn"
+              class="btn-dice"
+              type="button"
+              title="랜덤 아이디어 추천"
+            >🎲</button>
+          </div>
+          <p class="mt-1.5 text-xs text-slate-400">만들고 싶은 서비스를 한 줄로 설명해 주세요. <span class="text-indigo-400 font-semibold">🎲 눌러서 랜덤 아이디어를!</span></p>
+
+          <!-- ✨ AI 추천 버튼 -->
+          <button id="suggestBtn" class="btn-ai mt-3" type="button">
+            <span class="sparkle-icon text-base">✨</span>
+            <span id="suggestBtnText">AI에게 핵심 기능 추천받기</span>
+          </button>
+        </div>
+
+        <!-- ② 프로젝트 유형 -->
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="step-badge">2</span>
+            <label for="projectType" class="lbl mb-0">프로젝트 유형</label>
+          </div>
+          <div class="select-wrap">
+            <select id="projectType" class="field pr-10">
+              <option value="단일 웹페이지 (Landing Page)">📄 단일 웹페이지 (Landing Page)</option>
+              <option value="관리자 대시보드 (Dashboard)">📊 관리자 대시보드 (Dashboard)</option>
+              <option value="크롬 확장 프로그램 (Chrome Extension)">🧩 크롬 확장 프로그램 (Chrome Extension)</option>
+              <option value="모바일 웹 앱 (PWA)">📱 모바일 웹 앱 (PWA)</option>
+              <option value="일반 웹 서비스 (Web Service)">🌐 일반 웹 서비스 (Web Service)</option>
+            </select>
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </div>
+        </div>
+
+        <!-- ③ 핵심 기능 -->
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="step-badge">3</span>
+            <label for="coreFeatures" class="lbl mb-0">핵심 기능 <span class="text-red-400">*</span></label>
+          </div>
+          <textarea
+            id="coreFeatures"
+            class="field"
+            rows="5"
+            placeholder="예:
+- 회원가입 / 로그인
+- 맛집 검색 및 필터링
+- 즐겨찾기 저장
+- 리뷰 작성 및 별점"
+          ></textarea>
+          <p class="mt-1.5 text-xs text-slate-400">줄바꿈 또는 쉼표로 구분해 입력하세요.</p>
+        </div>
+
+        <!-- ④ 디자인 컨셉 -->
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="step-badge">4</span>
+            <label for="designConcept" class="lbl mb-0">디자인 컨셉</label>
+          </div>
+          <div class="select-wrap">
+            <select id="designConcept" class="field pr-10">
+              <option value="modern">🌟 모던 &amp; 미니멀</option>
+              <option value="dark">🌑 다크 모드</option>
+              <option value="glassmorphism">💎 글라스모피즘</option>
+              <option value="colorful">🎨 컬러풀 &amp; 생동감</option>
+              <option value="corporate">🏢 비즈니스 &amp; 전문적</option>
+              <option value="playful">🎮 귀엽고 유쾌함</option>
+              <option value="retro">📺 레트로 &amp; 빈티지</option>
+            </select>
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </div>
+        </div>
+
+        <!-- ⑤ 타겟 AI -->
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="step-badge">5</span>
+            <label for="targetAI" class="lbl mb-0">타겟 AI</label>
+          </div>
+          <div class="select-wrap">
+            <select id="targetAI" class="field pr-10">
+              <option value="antigravity">✦ Antigravity AI</option>
+              <option value="claude">🧠 Claude (Anthropic)</option>
+              <option value="chatgpt">💬 ChatGPT (OpenAI)</option>
+              <option value="gemini">♊ Gemini (Google)</option>
+              <option value="cursor">⚡ Cursor AI</option>
+              <option value="universal">🌐 범용 (모든 AI)</option>
+            </select>
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </div>
+        </div>
+
+        <!-- ⑥ 출력 모드 -->
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="step-badge">6</span>
+            <label for="outputMode" class="lbl mb-0">출력 모드</label>
+          </div>
+          <div class="select-wrap">
+            <select id="outputMode" class="field pr-10">
+              <option value="beginner">🌱 초보자 모드 (단일 HTML 완성형)</option>
+              <option value="expert">💻 전공자 모드 (모듈화 및 프레임워크)</option>
+            </select>
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          </div>
+          <p class="mt-1.5 text-xs text-slate-400">초보자는 바로 실행 가능한 단일 파일, 전공자는 React 컴포넌트 구조로 생성합니다.</p>
+        </div>
+
+        <!-- ⑦ 추가 요청 (선택) -->
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="step-badge" style="background:linear-gradient(135deg,#64748b,#94a3b8)">7</span>
+            <label for="extraContext" class="lbl mb-0">추가 요청 <span class="text-slate-400 font-normal">(선택)</span></label>
+          </div>
+          <input
+            id="extraContext"
+            type="text"
+            class="field"
+            placeholder="예: 반응형 필수, 한국어 주석 포함, Firebase 연동…"
+          />
+        </div>
+
+        <!-- Generate Button -->
+        <button id="generateBtn" class="btn-primary" type="button">
+          <span class="flex items-center justify-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            프롬프트 생성하기
+          </span>
+        </button>
+
+        <!-- Reset — data-action 속성으로 main.js에서 바인딩 -->
+        <button
+          data-action="reset"
+          type="button"
+          class="w-full py-2.5 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-600 border border-slate-200 hover:bg-slate-50 transition-all duration-200"
+        >↺ 초기화</button>
+
+      </div>
+    </section>
+
+    <!-- ══════════════════════════
+         RIGHT: RESULT PANEL
+    ══════════════════════════ -->
+    <section class="glass rounded-2xl shadow-xl overflow-hidden animate-slide-up" style="animation-delay:0.12s">
+
+      <!-- mac-style top bar -->
+      <div class="panel-bar justify-between">
+        <div class="flex items-center gap-3">
+          <div class="flex gap-1.5">
+            <span class="dot bg-red-400"></span>
+            <span class="dot bg-yellow-400"></span>
+            <span class="dot bg-green-400"></span>
+          </div>
+          <span class="text-white text-base font-bold ml-1" style="letter-spacing:-0.01em;">✨ 완성된 프롬프트</span>
+        </div>
+        <span id="charCount" style="font-family:'Fira Code',monospace;font-size:0.95rem;font-weight:700;color:#93c5fd;"></span>
+      </div>
+
+      <div class="p-6 flex flex-col gap-4" style="min-height:520px;">
+
+        <!-- Result Area -->
+        <div id="resultArea" class="flex-1">
+
+          <!-- Placeholder -->
+          <div id="placeholder">
+            <div style="width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#dbeafe,#ede9fe);display:flex;align-items:center;justify-content:center;font-size:2rem;box-shadow:inset 0 2px 8px rgba(0,0,0,0.07);">✦</div>
+            <div>
+              <p style="font-size:0.9rem;font-weight:600;color:#64748b;margin-bottom:4px;">아직 프롬프트가 없어요</p>
+              <p style="font-size:0.75rem;color:#94a3b8;line-height:1.6;">왼쪽에서 정보를 입력하고<br/><strong style="color:#3b82f6;">프롬프트 생성하기</strong> 버튼을 눌러보세요!</p>
+            </div>
+          </div>
+
+          <!-- Result textarea (hidden until generated) -->
+          <div id="resultBoxWrap">
+            <textarea id="resultBox" readonly></textarea>
+          </div>
+
+        </div>
+
+        <!-- Action buttons row -->
+        <div class="flex items-center gap-3">
+          <button id="copyBtn" class="btn-copy flex-1" type="button" disabled>
+            <svg id="copyIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+            </svg>
+            <span id="copyText">클립보드 복사</span>
+          </button>
+
+          <button id="downloadBtn" class="btn-copy" type="button" disabled title="텍스트 파일로 저장">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+            </svg>
+            저장
+          </button>
+        </div>
+
+        <!-- Tips (hidden until generated) -->
+        <div id="tipsBox" class="hidden rounded-xl bg-blue-50 border border-blue-100 px-4 py-3 text-xs text-blue-700 space-y-1">
+          <p class="font-bold text-blue-800">💡 사용 팁</p>
+          <p>• 복사한 프롬프트를 AI 채팅창에 그대로 붙여넣기 하세요.</p>
+          <p>• 결과가 마음에 안 들면 기능을 더 구체적으로 입력해 보세요.</p>
+          <p>• 에러가 나면 에러 메시지와 함께 "고쳐줘"라고 후속 질문하세요.</p>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       HOW TO USE — 3 STEPS
+  ════════════════════════════════════════ -->
+  <section class="mt-12 md:mt-16 animate-fade-in" style="animation-delay:0.25s">
+    <h2 class="text-xl md:text-2xl font-extrabold text-slate-700 text-center mb-8">🗺️ 3단계로 끝나는 사용법</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+      <div class="how-card shadow-md">
+        <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;color:#fff;box-shadow:0 6px 18px rgba(29,78,216,0.35);">1</div>
+        <h3 class="font-bold text-slate-700 text-base">정보 입력</h3>
+        <p class="text-sm text-slate-500 leading-relaxed">프로젝트 주제와 핵심 기능을 입력하고, 원하는 디자인 컨셉 &amp; AI를 선택하세요.</p>
+      </div>
+
+      <div class="how-card shadow-md" style="animation-delay:0.1s">
+        <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;color:#fff;box-shadow:0 6px 18px rgba(29,78,216,0.35);">2</div>
+        <h3 class="font-bold text-slate-700 text-base">자동 조립</h3>
+        <p class="text-sm text-slate-500 leading-relaxed">'프롬프트 생성하기' 버튼 클릭 한 번으로 전문가급 프롬프트가 즉시 완성됩니다.</p>
+      </div>
+
+      <div class="how-card shadow-md" style="animation-delay:0.2s">
+        <div style="width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,#1d4ed8,#3b82f6);display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900;color:#fff;box-shadow:0 6px 18px rgba(29,78,216,0.35);">3</div>
+        <h3 class="font-bold text-slate-700 text-base">복사 &amp; 실행</h3>
+        <p class="text-sm text-slate-500 leading-relaxed">'클립보드 복사'로 복사한 뒤, AI 채팅창에 붙여넣기하면 바로 코딩이 시작됩니다!</p>
+      </div>
+
+    </div>
+  </section>
+</main>
+
+<footer class="text-center py-8 text-xs text-slate-400 mt-4">
+  Vibe Prompt Builder · Built with ✦ Antigravity AI · 2025
+</footer>
+
+<!-- ════════ TOAST ════════ -->
+<div id="toast">
+  <svg class="w-4 h-4 flex-shrink-0" id="toastIcon" fill="currentColor" viewBox="0 0 20 20">
+    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+  </svg>
+  <span id="toastMsg"></span>
+</div>
+
+<!-- ════════════════════════════════════════
+     JavaScript — ES Module 진입점
+     (type="module"이어야 import/export 사용 가능)
+════════════════════════════════════════ -->
+<script type="module" src="./js/main.js"></script>
+
+</body>
+</html>

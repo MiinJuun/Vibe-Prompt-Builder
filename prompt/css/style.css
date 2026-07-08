@@ -1,0 +1,347 @@
+/* ════════════════════════════════════════
+   Vibe Prompt Builder — style.css
+   모든 커스텀 CSS (Tailwind CDN 제외)
+════════════════════════════════════════ */
+
+body { font-family: 'Pretendard', system-ui, sans-serif; }
+
+/* ── custom scrollbar ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 99px; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+/* ── hero gradient ── */
+.hero-bg {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 45%, #1d4ed8 75%, #3b82f6 100%);
+}
+
+/* ── glass card ── */
+.glass {
+  background: rgba(255,255,255,0.93);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255,255,255,0.75);
+}
+
+/* ── inputs ── */
+.field {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 14px;
+  border: 1.5px solid #e2e8f0;
+  background: #fff;
+  color: #1e293b;
+  font-size: 0.875rem;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+.field::placeholder { color: #94a3b8; }
+.field:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3.5px rgba(59,130,246,0.18);
+}
+.field.error {
+  border-color: #f87171 !important;
+  box-shadow: 0 0 0 3px rgba(248,113,113,0.2) !important;
+}
+select.field { appearance: none; cursor: pointer; }
+
+/* ── dice (random roulette) button ── */
+.btn-dice {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: transform 0.2s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.2s, border-color 0.2s, background 0.2s;
+  line-height: 1;
+}
+.btn-dice:hover {
+  transform: scale(1.18) rotate(-8deg);
+  background: linear-gradient(135deg, #eff6ff, #eef2ff);
+  border-color: #818cf8;
+  box-shadow: 0 6px 20px rgba(99,102,241,0.28);
+}
+.btn-dice:active {
+  transform: scale(0.95) rotate(10deg);
+}
+@keyframes diceRoll {
+  0%   { transform: rotate(0deg)   scale(1); }
+  25%  { transform: rotate(-15deg) scale(1.2); }
+  50%  { transform: rotate(15deg)  scale(1.1); }
+  75%  { transform: rotate(-8deg)  scale(1.15); }
+  100% { transform: rotate(0deg)   scale(1); }
+}
+.btn-dice.rolling { animation: diceRoll 0.45s cubic-bezier(0.34,1.56,0.64,1); }
+
+/* ── primary button ── */
+.btn-primary {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  color: #fff;
+  font-weight: 700;
+  border-radius: 14px;
+  padding: 14px 24px;
+  font-size: 0.95rem;
+  width: 100%;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.25s, transform 0.2s;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 35%, rgba(255,255,255,0.18) 50%, transparent 65%);
+  transform: translateX(-120%);
+  transition: transform 0.55s ease;
+}
+.btn-primary:hover::before { transform: translateX(120%); }
+.btn-primary:hover { box-shadow: 0 10px 36px rgba(29,78,216,0.45); transform: translateY(-2px); }
+.btn-primary:active { transform: translateY(0); box-shadow: none; }
+
+/* ── copy button ── */
+.btn-copy {
+  background: #f8fafc;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 11px 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+.btn-copy:hover:not(:disabled) { background:#f1f5f9; border-color:#94a3b8; transform:translateY(-1px); box-shadow:0 4px 14px rgba(0,0,0,0.08); }
+.btn-copy:disabled { opacity: 0.4; cursor: not-allowed; }
+.btn-copy.copied { background:#dcfce7; border-color:#22c55e; color:#15803d; }
+
+/* ── result textarea ── */
+#resultBox {
+  font-family: 'Fira Code', monospace;
+  font-size: 20px;
+  line-height: 1.85;
+  resize: none;
+  color: #1e293b;
+  background: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+  height: 100%;
+  padding: 32px 28px;
+  box-sizing: border-box;
+}
+
+/* ── select arrow wrapper ── */
+.select-wrap { position: relative; }
+.select-wrap svg {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #94a3b8;
+}
+
+/* ── panel top bar ── */
+.panel-bar {
+  background: linear-gradient(90deg, #1e293b, #334155);
+  padding: 13px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+
+/* ── step badge ── */
+.step-badge {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg,#1d4ed8,#3b82f6);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 3px 10px rgba(29,78,216,0.35);
+}
+
+/* ── API key section ── */
+.apikey-section {
+  background: linear-gradient(135deg, rgba(30,58,138,0.06), rgba(99,102,241,0.06));
+  border: 1.5px solid rgba(99,102,241,0.2);
+  border-radius: 16px;
+  padding: 14px 16px;
+}
+.apikey-section .field {
+  font-family: 'Fira Code', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  background: rgba(255,255,255,0.8);
+}
+
+/* ── AI suggest button ── */
+.btn-ai {
+  width: 100%;
+  padding: 11px 16px;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #7c3aed, #a855f7, #ec4899);
+  background-size: 200% 200%;
+  animation: gradientShift 3s ease infinite;
+  transition: box-shadow 0.25s, transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-ai::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.22) 50%, transparent 100%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+}
+.btn-ai:hover::before { transform: translateX(100%); }
+.btn-ai:hover:not(:disabled) { box-shadow: 0 8px 28px rgba(124,58,237,0.5); transform: translateY(-2px); }
+.btn-ai:active { transform: translateY(0); }
+.btn-ai:disabled { opacity: 0.65; cursor: not-allowed; animation: none; background: #94a3b8; }
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ── spinner ── */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  width: 16px; height: 16px;
+  border: 2.5px solid rgba(255,255,255,0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.75s linear infinite;
+  flex-shrink: 0;
+}
+
+/* ── sparkle pulse on ✨ icon ── */
+@keyframes sparklePop {
+  0%,100% { transform: scale(1) rotate(0deg); }
+  30%     { transform: scale(1.3) rotate(-10deg); }
+  60%     { transform: scale(0.9) rotate(8deg); }
+}
+.btn-ai:not(:disabled):hover .sparkle-icon { animation: sparklePop 0.6s ease; }
+
+/* ── api key saved badge ── */
+.key-saved {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 0.65rem; font-weight: 700;
+  color: #15803d; background: #dcfce7;
+  border: 1px solid #86efac;
+  border-radius: 99px; padding: 2px 8px;
+  opacity: 0; transition: opacity 0.3s;
+}
+.key-saved.show { opacity: 1; }
+
+/* ── toast ── */
+#toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  padding: 12px 22px;
+  border-radius: 14px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 9999;
+  white-space: nowrap;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+}
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ── placeholder ── */
+#placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 300px;
+  gap: 14px;
+  color: #94a3b8;
+  user-select: none;
+  text-align: center;
+  padding: 24px;
+}
+
+/* ── result area ── */
+#resultArea {
+  background: #f8fafc;
+  border-radius: 16px;
+  border: 1.5px solid #e2e8f0;
+  overflow: hidden;
+  min-height: 300px;
+  position: relative;
+  flex: 1;
+}
+#resultBoxWrap {
+  display: none;
+  height: 100%;
+  padding: 20px;
+}
+
+/* ── how-to cards ── */
+.how-card {
+  background: rgba(255,255,255,0.88);
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: 18px;
+  padding: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* label */
+.lbl {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #475569;
+  margin-bottom: 6px;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+/* char counter */
+#charCount { font-family: 'Fira Code', monospace; font-size: 0.72rem; color: #94a3b8; }
